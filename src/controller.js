@@ -25,7 +25,7 @@ export function getArtistByID(req, res){
 
     // const songsCount = songs.filter(song => song.idArtist === idArtist).length;
     
-    found.songsCount = dao.countSongsByArtistId(idArtist);
+    // found.songsCount = dao.countSongsByArtistId(idArtist);
 
     res.status(200).json(found);
 }
@@ -41,10 +41,10 @@ export function createArtist(req, res) {
         return res.status(400).json({ error: "Nombre requerido" });
     }
 
-    dao.createArtist(newArtist);
+    newArtist.id = dao.createArtist(newArtist);;
 
     // artists.push(newArtist);
-    res.status(201).send("");
+    res.status(201).json(newArtist);
 }
 
 export function updateArtist(req, res){
@@ -56,24 +56,24 @@ export function updateArtist(req, res){
     if (!newData.name || newData.name.trim() === "") {
         return res.status(400).json({ error: "Nombre requerido" });
     }
+
+    if (!dao.updateArtist(id, newData)){
+        return res.status(404).json({error: "artista no encontrado"});
+    }
     
-    // si existe
-    const found = dao.findArtistById(id);
-    if (!found) return res.status(404).json({wtf: "wtf"});
-
-    dao.updateArtist(id, newData);
-
-    res.status(200).json(newData);
+    return res.status(200).json(newData);
 }
 
 export function deleteArtist(req,res){
     const id = req.params.idArtist
   
     // si existe
-    const found = dao.findArtistById(id);
-    if (!found) return res.status(404).json({wtf: "wtf"});
+    // const found = dao.findArtistById(id);
+    // if (!found) return res.status(404).json({wtf: "wtf"});
 
-    dao.deleteArtist(id);
+    if (!dao.deleteArtist(id))
+        return res.status(404).json({error: "artista no encontrado"})
 
-    res.status(200).json({deleted: true, data: found});
+
+    res.status(200).json({deleted: true});
 }

@@ -2,17 +2,11 @@ import Database from 'better-sqlite3';
 import { nanoid } from "nanoid";
 
 const db = new Database('db.sqlite', { verbose: console.log } );
-// const stmt = db.prepare('SELECT * FROM artists');
-// const data = stmt.all();
-// console.log(data);
-
-import { artists } from "./artists.js";
-import songs from "./songs.js";
-
-// import artists from "./artists.js";
 
 export function findArtistById(id) {
-    return artists.find(artista => artista.id === id);
+    const stmt = db.prepare("SELECT * FROM artists WHERE id = ?");
+    const artist = stmt.get(id);
+    return artist;
 }
 
 export function countSongsByArtistId(id){
@@ -26,32 +20,27 @@ export function getAll(){
 }
 
 export function createArtist(artist){
-    artist.id = nanoid();
-    artists.push(artist);
-    return artist;
+    const stmt = db.prepare("INSERT INTO artists (name) VALUES (?)");
+    
+    // const valor = stmt.run(artist.name);  // --->  valor = { changes: 1, lastInsertedRowid: 5629874 }
+    // const lastInsertRowid = valor.lastInsertRowid;
+
+    const { lastInsertRowid } = stmt.run(artist.name); // deconstrucción de un objeto.
+
+    return lastInsertRowid;
 }
 
 export function updateArtist(id, newArtist){
-    const found = findArtistById(id);
-    found.name = newArtist.name;
-    return found;
+    // const found = findArtistById(id);
+    const stmt = db.prepare("UPDATE artists SET name = ? WHERE id = ?");
+    const data = stmt.run(newArtist.name , id);
+
+    return data.changes > 0; // ha habido cambios
 }
 
 export const deleteArtist = (id) => {
-    const found = findArtistById(id);
-    artists = artists.filter((e => {
-        return e.idArtist !== id
-    }));
+    const stmt = db.prepare("DELETE FROM artists WHERE id = ?");
+    const data = stmt.run(id);
 
-    return found;
-}
-
-export function x(){
-    return "x"
-}
-export function y(){
-    return "y"
-}
-export function z(){
-    return "z"
+    return data.changes > 0;
 }
