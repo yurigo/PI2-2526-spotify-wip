@@ -14,12 +14,12 @@ export function getAllArtists(req, res) {
 export function getArtistByID(req, res) {
   const idArtist = Number(req.params.idArtist);
 
-  // const found = artists.find((e) => e.id === idArtist);
+  // // const found = artists.find((e) => e.id === idArtist);
   const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
   // const songsCount = songs.filter(song => song.idArtist === idArtist).length;
 
@@ -49,11 +49,11 @@ export function updateArtist(req, res) {
   const newData = req.body;
   const id = req.params.idArtist;
 
-  // validaciones
-  // datos de entrada
-  if (!newData.name || newData.name.trim() === "") {
-    return res.status(400).json({ error: "Nombre requerido" });
-  }
+  // // validaciones
+  // // datos de entrada
+  // if (!newData.name || newData.name.trim() === "") {
+  //   return res.status(400).json({ error: "Nombre requerido" });
+  // }
 
   if (!artistsDao.updateArtist(id, newData)) {
     return res.status(404).json({ error: "artista no encontrado" });
@@ -65,9 +65,9 @@ export function updateArtist(req, res) {
 export async function deleteArtist(req, res) {
   const idArtist = req.params.idArtist;
 
-  // si existe
-  const found = artistsDao.findArtistById(idArtist);
-  if (!found) return res.status(404).json({ wtf: "Artista no encontrado" });
+  // // si existe
+  // const found = artistsDao.findArtistById(idArtist);
+  // if (!found) return res.status(404).json({ wtf: "Artista no encontrado" });
 
   artistsDao.deleteArtist(idArtist);
   res.status(200).json({ deleted: true });
@@ -76,30 +76,28 @@ export async function deleteArtist(req, res) {
 export function getSongsFromArtist(req, res) {
   const idArtist = Number(req.params.idArtist);
 
-  const found = artistsDao.findArtistById(idArtist);
+  // const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
-  found.songs = songsDao.findArtistSongsListById(idArtist);
+  // found.songs = songsDao.findArtistSongsListById(idArtist);
+  const songs = songsDao.findArtistSongsListById(idArtist);
 
-  // const songsCount = songs.filter(song => song.idArtist === idArtist).length;
-
-  // found.songsCount = dao.countSongsByArtistId(idArtist);
-
-  res.status(200).json(found);
+  // res.status(200).json(found);
+  res.status(200).json(songs);
 }
 
 export function getSpecificSongFromArtist(req, res) {
   const idArtist = Number(req.params.idArtist);
   const idSong = Number(req.params.idSong);
 
-  const found = artistsDao.findArtistById(idArtist);
+  // const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
   const song = songsDao.findSongByArtist(idSong, idArtist);
 
@@ -107,18 +105,20 @@ export function getSpecificSongFromArtist(req, res) {
     return res.status(404).json({ error: "Canción no encontrada" });
   }
 
-  found.song = song;
-  res.status(200).json(found);
+  // found.song = song;
+  // res.status(200).json(found);
+  // const song = song;
+  res.status(200).json(song);
 }
 
 export function createSongForArtist(req, res) {
   const idArtist = Number(req.params.idArtist);
 
-  const found = artistsDao.findArtistById(idArtist);
+  // const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
   if (
     !req.body.name ||
@@ -141,11 +141,11 @@ export function createSongForArtist(req, res) {
 export function updateSong(req, res) {
   const idArtist = Number(req.params.idArtist);
 
-  const found = artistsDao.findArtistById(idArtist);
+  // const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
   if (
     !req.body.name ||
@@ -171,11 +171,11 @@ export function updateSong(req, res) {
 export function deleteSong(req, res) {
   const idArtist = Number(req.params.idArtist);
 
-  const found = artistsDao.findArtistById(idArtist);
+  // const found = artistsDao.findArtistById(idArtist);
 
-  if (!found) {
-    return res.status(404).json({ error: "Artista no encontrado" });
-  }
+  // if (!found) {
+  //   return res.status(404).json({ error: "Artista no encontrado" });
+  // }
 
   const idSong = Number(req.params.idSong);
   const song = songsDao.findSongByArtist(idSong, idArtist);
